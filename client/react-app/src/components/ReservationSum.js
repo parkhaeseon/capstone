@@ -152,6 +152,10 @@ export default function ReservationSum(props) {
     setOpen(false);
   };
 
+  var Datedata = new Date();
+  var Year = Datedata.getFullYear().toString();
+  var Month = (Datedata.getMonth()+1).toString();
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -219,10 +223,32 @@ export default function ReservationSum(props) {
             <List>
                 {
                     <ListItem button component={Link}
-                    to={{
-                        pathname : '/index',
-                        state : props.history.location.state
-                        }}>
+
+                    onClick = {function(e) {
+                        e.preventDefault();
+                        axios({
+                            method:'post',
+                            url:'http://100.26.66.172:5000/gomain',
+                            data: {
+                                classlevel : userlevel,
+                                id : props.history.location.state.ID,
+                            }
+                        })
+                        .then(function(res2) {
+                            props.history.location.state.rec = res2.data.rec;
+                            props.history.push('/index', props.history.location.state);
+                        })
+                        .catch(function(error2) {
+                            console.log(error2);
+                        });
+                    }}
+
+                    // to={{
+                    //     pathname : '/index',
+                    //     state : props.history.location.state
+                    //     }}
+                        
+                        >
                         <ListItemIcon> <HomeIcon /></ListItemIcon>
                         <ListItemText primary="홈"/>
                     </ListItem>
@@ -282,7 +308,9 @@ export default function ReservationSum(props) {
                             url:'http://100.26.66.172:5000/reservationDo/manage',
                             data : {
                                 classlevel : userlevel,
-                                id : props.history.location.state.ID
+                                id : props.history.location.state.ID,
+                                year : Year,
+                                month : Month
                             }
                         })
                         .then(function(res) {
@@ -417,7 +445,7 @@ export default function ReservationSum(props) {
           [classes.contentShift]: open,
         })}
       >
-      <ManageSelect  year={props.match.params.year} month={props.match.params.month}/>
+      <ManageSelect isSum = 'sum'  year={props.match.params.year} month={props.match.params.month} st= {props}/>
         {/* match.params.~ 에서 props.match.params.~로 고쳤음 - phs */}
 
 

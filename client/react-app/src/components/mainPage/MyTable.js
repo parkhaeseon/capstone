@@ -53,8 +53,9 @@ export default function MyTable(props) {
   const classes = useStyles();
 
   var elements=[];
-  const getres = props.rect.rec;
-
+  const getres = props.rect;
+    console.log('getres = ', getres);
+    
   const [openPrDialog, setOpenPrDialog] = React.useState(false);
 
   const PrDialogClickOpen = () => {
@@ -131,7 +132,5 @@ export default function MyTable(props) {
        </DialogActions>
      </Dialog>
     </React.Fragment>
-
-
   );
 }

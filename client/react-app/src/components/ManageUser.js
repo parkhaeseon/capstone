@@ -146,6 +146,7 @@ export default function ManageUser(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const nowDate = new Date(); // phs
+  var getname = '';
   let Datedata = new Date();
   let Year = Datedata.getFullYear().toString();
   let Month = (Datedata.getMonth()+1).toString();
@@ -153,9 +154,13 @@ export default function ManageUser(props) {
     setOpen(true);
   };
 
+ 
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  
 
   return (
     <div className={classes.root}>
@@ -224,10 +229,32 @@ export default function ManageUser(props) {
         <List>
             {
                 <ListItem button component={Link}
-                to={{
-                    pathname : '/index',
-                    state : props.history.location.state
-                    }}>
+
+                onClick = {function(e) {
+                    e.preventDefault();
+                    axios({
+                        method:'post',
+                        url:'http://100.26.66.172:5000/gomain',
+                        data: {
+                            classlevel : userlevel,
+                            id : props.history.location.state.ID,
+                        }
+                    })
+                    .then(function(res2) {
+                        props.history.location.state.rec = res2.data.rec;
+                        props.history.push('/index', props.history.location.state);
+                    })
+                    .catch(function(error2) {
+                        console.log(error2);
+                    });
+                }}
+
+                // to={{
+                //     pathname : '/index',
+                //     state : props.history.location.state
+                //     }}
+                    
+                    >
                     <ListItemIcon> <HomeIcon /></ListItemIcon>
                     <ListItemText primary="홈"/>
                 </ListItem>
@@ -290,7 +317,9 @@ export default function ManageUser(props) {
                         url:'http://100.26.66.172:5000/reservationDo/manage',
                         data : {
                             classlevel : userlevel,
-                            id : props.history.location.state.ID
+                            id : props.history.location.state.ID,
+                            year : Year,
+                            month : Month
                         }
                     })
                     .then(function(res) {
@@ -436,13 +465,75 @@ export default function ManageUser(props) {
         <Paper className={classes.rootPaper}>
             <Grid container spacing={2} className={classes.searchArea}>
               <Grid item xs={8}>
-                <TextField
-                    variant="outlined"
-                    InputProps={{ className: classes.input1 }}
-                />
-              </Grid>
-                <Grid item xs={4}><Button variant='outlined' className={classes.searchBt}>검색</Button></Grid>
+                  <TextField
+                      variant="outlined"
+                      InputProps={{ className: classes.input1 }}
+                      onChange = {function(e) {
+                        getname = e.target.value              
+                      }}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                    <Button variant='outlined' className={classes.searchBt}
+                    
+                    onClick = {function(e) {
+                        e.preventDefault();
 
+                        if(getname.length == 0) {
+                            alert('빈 칸이므로, 전체로 검색합니다.');
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/penalty/manage'
+                              })
+                              .then(function(res) {
+                                  if(res.statusText == "OK") {
+                                    console.log('466 line res.data = ', res.data);
+                                    props.history.location.state.penaltyMng = res.data;
+                                    props.history.push({
+                                      pathname : '/users',
+                                      state : props.history.location.state
+                                    });
+                                  }
+                                  else {
+                                    alert('현재 제재관리를 볼 수 없습니다.');
+                                  }
+                              })
+                              .catch(function(error) {
+                                  console.log(error);
+                              });
+                            return;
+                        }
+
+
+                        axios({
+                            method:'post',
+                            url:'http://100.26.66.172:5000/penalty/select',
+                            data : {
+                                ni : getname
+                            }
+                          })
+                          .then(function(res) {
+
+                              if(res.statusText == "OK") {
+                                console.log('494 line res.data = ', res.data);
+                                
+                                props.history.location.state.penaltyMng = res.data;
+                                props.history.push({
+                                  pathname : '/users',
+                                  state : props.history.location.state
+                                });
+                              }
+                              else {
+                                alert('현재 제재관리를 볼 수 없습니다.');
+                              }
+                          })
+                          .catch(function(error) {
+                              console.log(error);
+                          });
+                    }}
+                    >
+                    검색</Button>
+                </Grid>
             </Grid>
             <ManageTable pst = {props} st = {props.history.location.state.penaltyMng} page='manageUser'  openable={open}/>
         </Paper>

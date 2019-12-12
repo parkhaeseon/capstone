@@ -5,7 +5,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
-  Container, Divider, List, ListItem, ListItemText, Toolbar, IconButton, Drawer, ListItemIcon, Paper, Button
+  Container, Divider, List, ListItem, ListItemText, Toolbar, IconButton, Drawer, ListItemIcon, Paper, Button,
+  Table, TableBody, TableCell, TableHead, TableRow
 } from '@material-ui/core';
 import {Link} from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -145,6 +146,15 @@ function getYearMon(type){
   return "/"+type+"/"+year+"/"+mon;
 }
 
+function TempgetNowDate(date){
+    var year = date.getFullYear().toString();
+    var mon = (date.getMonth()+1).toString();
+    var day = date.getDate().toString();
+    if(mon<10) mon="0"+mon;
+    if(day<10) day="0"+day;
+    return year+mon+day;
+  }
+
 export default function Reservation(props) {
   const userlevel = props.history.location.state.classlevel; // phs
   const classes = useStyles();
@@ -167,7 +177,34 @@ export default function Reservation(props) {
 
   const handleDateChange = date => {
     setSelectedDate(date);
-    props.history.push(getNowDate(date), props.history.location.state);
+
+    axios({
+        method:'post',
+        url:'http://100.26.66.172:5000/reservationDo/restable',
+        data : {
+            ymd : TempgetNowDate(date)
+        }
+        })
+        .then(function(res) {
+            if(res.statusText == "OK") {
+
+                props.history.location.state.reservationNow = res.data.result;
+                props.history.location.state.roomsit = res.data.result2;
+
+                props.history.push({
+                 pathname : getNowDate(date),
+                 state : props.history.location.state
+            });
+            }
+            else {
+              alert('ReservationMain.js 272 line error');
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
+    //props.history.push(getNowDate(date), props.history.location.state);
     {/* history 에서 props.history로 고치고, props.history.location.state 추가 - phs */}
   };
 
@@ -245,10 +282,32 @@ export default function Reservation(props) {
                 <List>
                     {
                         <ListItem button component={Link}
-                        to={{
-                            pathname : '/index',
-                            state : props.history.location.state
-                            }}>
+
+                        onClick = {function(e) {
+                            e.preventDefault();
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/gomain',
+                                data: {
+                                    classlevel : userlevel,
+                                    id : props.history.location.state.ID,
+                                }
+                            })
+                            .then(function(res2) {
+                                props.history.location.state.rec = res2.data.rec;
+                                props.history.push('/index', props.history.location.state);
+                            })
+                            .catch(function(error2) {
+                                console.log(error2);
+                            });
+                        }}
+    
+                        // to={{
+                        //     pathname : '/index',
+                        //     state : props.history.location.state
+                        //     }}
+                            
+                            >
                             <ListItemIcon> <HomeIcon /></ListItemIcon>
                             <ListItemText primary="홈"/>
                         </ListItem>
@@ -287,7 +346,9 @@ export default function Reservation(props) {
                                 url:'http://100.26.66.172:5000/reservationDo/manage',
                                 data : {
                                     classlevel : userlevel,
-                                    id : props.history.location.state.ID
+                                    id : props.history.location.state.ID,
+                                    year : Year,
+                                    month : Month
                                 }
                             })
                             .then(function(res) {
@@ -459,7 +520,19 @@ export default function Reservation(props) {
             <div >
             <Paper className={classes.rootPaper}>
     
-    
+            <TableRow component="th" scope="row" style={{width:'12.5%'}}>
+                <TableCell align="center" style={{backgroundColor: "#ff4da6"}}
+                >관리자</TableCell>
+                <TableCell align="center" style={{backgroundColor: "#ff4d50"}}
+                >기업</TableCell>
+                <TableCell align="center" style={{backgroundColor: "#ff784e"}}
+                >교수</TableCell>
+                <TableCell align="center" style={{backgroundColor: "#ffdc4d"}}
+                >학생</TableCell>
+            </TableRow>
+
+      
+
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker className={classes.timePick}
                   disableToolbar
@@ -471,7 +544,11 @@ export default function Reservation(props) {
                   autoOk={true}
                   shouldDisableDate={beforeNow}
                   value={selectedDate}
-                  onChange={handleDateChange}
+                  onChange = {handleDateChange}
+                //   onChange = {function(e){
+                //     handleDateChange();
+                //     console.log('selectedDate =', selectedDate);               
+                //   }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}

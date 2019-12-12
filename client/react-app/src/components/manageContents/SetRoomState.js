@@ -226,6 +226,7 @@ export default function SetRoomState(props) {
                 //to={getNowDate()}
                 onClick = {function(e){
                     e.preventDefault();
+
                     axios({
                         method:'post',
                         url:'http://100.26.66.172:5000/room/manage',
@@ -234,20 +235,40 @@ export default function SetRoomState(props) {
                             Right : right
                         }
                     })
-                    .then(function(res) {
+                    .then(function(res) {                
                         if(res.data == 'success') {
-                            const { history } = props;
-                            props.st.history.push('/index', props.st.history.location.state);
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/room/list'
+                              })
+                              .then(function(res2) {
+                                  if(res.statusText == "OK") {
+                                    alert('룸의 상태를 변경하였습니다.');
+                                    props.st.history.location.state.roomlist = res2.data;
+                                    props.st.history.push({
+                                      pathname : '/rooms',
+                                      state : props.st.history.location.state
+                                    });
+                                  }
+                                  else {
+                                    alert('현재 시설관리를 볼 수 없습니다.');
+                                  }
+                              })
+                              .catch(function(error) {
+                                  console.log(error);
+                              });
+
+                            // const { history } = props;
+                            // props.st.history.push('/index', props.st.history.location.state);
                           }
                         else {
                             alert('SetRoomState.js 오류 발생 212 line');
                         }
-                        console.log(res);
-
                     })
                     .catch(function(error) {
                         console.log(error);
                     });
+
                 }}
 
             >OK</Button>

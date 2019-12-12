@@ -25,7 +25,8 @@ router.post('/', function(req, res) {
   
   if(result.length == 1) 
   {
-    const result2 = db.query(`select count(*) as cnt from penalty p1
+    const result2 = db.query(`select date_format(datestart, '%Y년 %m월 %d일') as dates, 
+    date_format(dateend, '%Y년 %m월 %d일') as datee from penalty p1
     inner join penaltylist p2
     using(penaltycode)
     where p2.id = ?
@@ -35,8 +36,8 @@ router.post('/', function(req, res) {
     date_format(p1.dateend, '%Y%m%d')`, [post.email]);
 
     // 해당 아이디가 현재 제재 중이라면
-    if(result2[0].cnt >= 1) {
-        res.send('loginpenalty')
+    if(result2.length >= 1) {
+        res.send({ word : 'loginpenalty', dbs : result2});
         return;
     }
 

@@ -84,7 +84,25 @@ const useStyles = makeStyles(theme => ({
   container: {
     paddingTop: theme.spacing(6),
     // paddingBottom: theme.spacing(2),
-    margin:"auto"
+    
+    // margin:'auto',
+    [theme.breakpoints.down('sm')]:{
+      width:'95%',
+      margin:'auto',
+      
+  },
+    marginLeft:theme.spacing(13),
+    marginRight:theme.spacing(13),
+  },
+  container2: {
+    paddingTop: theme.spacing(6),
+    // paddingBottom: theme.spacing(2),
+    
+    margin:theme.spacing(0),
+    [theme.breakpoints.down('sm')]:{
+      width:'95%',
+      margin:'auto',
+  },
   },
   button:{
     margin : theme.spacing(1),
@@ -111,7 +129,7 @@ const useStyles = makeStyles(theme => ({
   },
   content2: {
     flexGrow: 1,
-    height: '92vh',
+    // height: '92vh',
     overflow: 'hidden',
     marginLeft:drawerWidth
   },
@@ -159,6 +177,9 @@ export default function ReservationDo(props, {history, match}) {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
   const fixedHeightPaper3 = clsx(classes.paper2, classes.fixedHeight);
+
+  console.log('mainpage.js props.history.location.state.rec =', props.history.location.state.rec);
+  
 
   var Datedata = new Date();
   var Year = Datedata.getFullYear().toString();
@@ -304,7 +325,9 @@ export default function ReservationDo(props, {history, match}) {
                             url:'http://100.26.66.172:5000/reservationDo/manage',
                             data : {
                                 classlevel : userlevel,
-                                id : props.history.location.state.ID
+                                id : props.history.location.state.ID,
+                                year : Year,
+                                month : Month
                             }
                         })
                         .then(function(res) {
@@ -317,7 +340,7 @@ export default function ReservationDo(props, {history, match}) {
                                 });
                             }
                             else {
-                              alert('mainpage.js 266 error');
+                              alert('mainpage.js 338 error');
                             }
                         })
                         .catch(function(error) {
@@ -470,7 +493,10 @@ export default function ReservationDo(props, {history, match}) {
         })}
       >
         <div className={classes.content2}>
-          <Container  maxWidth="lg" className={classes.container}>
+          <Container maxWidth='lg'
+          className={clsx(classes.container,{
+            [classes.container2]:open
+          })}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8} lg={8}>
                     <Paper className={fixedHeightPaper}>
@@ -484,7 +510,7 @@ export default function ReservationDo(props, {history, match}) {
                 </Grid>
                 <Grid item xs={12}>
                     <Paper className={fixedHeightPaper2}>
-                        <MyTable rect = {props.history.location.state}/>
+                        <MyTable rect = {props.history.location.state.rec}/>
                     </Paper>
                 </Grid>
             </Grid>

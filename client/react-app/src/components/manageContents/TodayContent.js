@@ -19,9 +19,9 @@ export default function TodayContent() {
     return (
      
         <React.Fragment >
-            <Title>Today</Title>
+            <Title>공지사항</Title>
             <div className={classes.root}>
-                <Typography variant="h4" align='center' className={classes.title}>오늘은 예약 내역이 없습니다.</Typography>
+                <Typography variant="h4" align='center' className={classes.title}>현재 공지사항이 없습니다.</Typography>
             </div>
         </React.Fragment>
      

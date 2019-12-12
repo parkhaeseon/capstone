@@ -208,10 +208,32 @@ export default function ReservationManage(props) {
             <List>
                 {
                     <ListItem button component={Link}
-                    to={{
-                        pathname : '/index',
-                        state : props.history.location.state
-                        }}>
+
+                    onClick = {function(e) {
+                        e.preventDefault();
+                        axios({
+                            method:'post',
+                            url:'http://100.26.66.172:5000/gomain',
+                            data: {
+                                classlevel : userlevel,
+                                id : props.history.location.state.ID,
+                            }
+                        })
+                        .then(function(res2) {
+                            props.history.location.state.rec = res2.data.rec;
+                            props.history.push('/index', props.history.location.state);
+                        })
+                        .catch(function(error2) {
+                            console.log(error2);
+                        });
+                    }}
+
+                    // to={{
+                    //     pathname : '/index',
+                    //     state : props.history.location.state
+                    //     }}
+                        
+                        >
                         <ListItemIcon> <HomeIcon /></ListItemIcon>
                         <ListItemText primary="홈"/>
                     </ListItem>
@@ -409,7 +431,11 @@ export default function ReservationManage(props) {
           [classes.contentShift]: open,
         })}
       >
-      <ManageSelect year={props.match.params.year} month={props.match.params.month}/>
+      <ManageSelect 
+        st = {props}
+        year={props.match.params.year} 
+        month={props.match.params.month}
+      />
         {/* match.params.~ 에서 props.match.params.~로 고쳤음 - phs */}
       <div >
         <Paper className={classes.rootPaper}>

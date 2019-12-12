@@ -66,8 +66,10 @@ export default function Signin(props){
                         const { history } = props;
                         props.history.push('/index', res.data);
                       }
-                    else if(res.data == 'loginpenalty') {
-                        alert('해당 아이디는 제재 중이므로, 로그인이 불가능합니다.');
+                    else if(res.data.word == 'loginpenalty') {
+                        var start_date = res.data.dbs[0].dates;
+                        var end_date = res.data.dbs[0].datee;
+                        alert('해당 아이디는 ' + start_date + '부터 ' + end_date + '까지 제재 중입니다.');
                     }
                     else if(res.data == 'Failure') {
                         alert('ID 또는 Password가 틀립니다.');

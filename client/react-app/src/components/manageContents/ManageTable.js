@@ -80,6 +80,15 @@ var getpntid = '';
 var getcontent = '';
 var getrescode = '';
 
+function getYearMon(type){
+    var date = new Date();
+    var year = date.getFullYear().toString();
+    var mon = (date.getMonth()+1).toString();
+    if(mon<10) mon="0"+mon;
+  
+    return "/"+type+"/"+year+"/"+mon;
+  }
+
 export default function ManageTable(props) {
   const classes = useStyles();
 
@@ -171,7 +180,32 @@ export default function ManageTable(props) {
                     .then(function(res) {
                         if(res.data == "success") {
                           alert('예약을 취소하였습니다.');
-                          props.pst.history.push('/index', props.pst.history.location.state);
+
+                          axios({
+                            method:'post',
+                            url:'http://100.26.66.172:5000/reservationDo/manage',
+                            data : {
+                                classlevel : props.pst.history.location.state.classlevel,
+                                id : props.pst.history.location.state.ID,
+                                year : Year,
+                                month : Month
+                            }
+                            })
+                            .then(function(res2) {
+                                if(res.statusText == "OK") {
+                                    props.pst.history.location.state.reservationmanage = res2.data;
+                                    props.pst.history.push({
+                                    pathname : getYearMon('manage'),
+                                    state : props.pst.history.location.state
+                                    });
+                                }
+                                else {
+                                    alert('ManageTable.js 204 line error');
+                                }
+                            })
+                            .catch(function(error2) {
+                                console.log(error2);
+                            });
                         }
                         else {
                           alert('ManageTable.js 178 line error');
@@ -201,8 +235,8 @@ export default function ManageTable(props) {
         <TableCell align="center" className={classes.cellUserTop}>이름</TableCell>
         <TableCell align="center" className={classes.cellUserTop}>제재 횟수</TableCell>
         <TableCell align="center" className={classes.cellUserTop}>제재 사유</TableCell>
-        <TableCell align="center" className={classes.cellUserTop}>최근 제재 시작 날짜</TableCell>
-        <TableCell align="center" className={classes.cellUserTop}>최근 제재 종료 날짜</TableCell>
+        <TableCell align="center" className={classes.cellUserTop}>제재 시작 날짜</TableCell>
+        <TableCell align="center" className={classes.cellUserTop}>제재 종료 날짜</TableCell>
         <TableCell align="center" className={classes.cellUserTop}>  </TableCell>
         <TableCell align="center" className={classes.cellUserTop}>  </TableCell>
       </TableRow>
@@ -210,8 +244,8 @@ export default function ManageTable(props) {
     </TableHead>
     );
 
-    if(pnt.length >= 2) {
-        for(let i=1; i<pnt.length; i++) {
+    if(pnt.length >= 1) {
+        for(let i=0; i<pnt.length; i++) {
             elements.push(
                 <TableRow ID = {pnt[i].ID}>
                   <TableCell align="center" className={classes.cellUser}>{pnt[i].Class}</TableCell>
@@ -247,7 +281,30 @@ export default function ManageTable(props) {
                         .then(function(res) {
                             if(res.data == "success") {
                               alert('제재를 취소하였습니다.');
-                              props.pst.history.push('/index', props.pst.history.location.state);
+
+
+                              axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/penalty/manage'
+                              })
+                              .then(function(res2) {
+                                  if(res.statusText == "OK") {
+                                    props.pst.history.location.state.penaltyMng = res2.data;
+                                    props.pst.history.push({
+                                      pathname : '/users',
+                                      state : props.pst.history.location.state
+                                    });
+                                  }
+                                  else {
+                                    alert('현재 제재관리를 볼 수 없습니다.');
+                                  }
+                              })
+                              .catch(function(error) {
+                                  console.log(error);
+                              });
+
+
+                              //props.pst.history.push('/index', props.pst.history.location.state);
                             }
                             else if(res.data == "fail") {
                                 alert('현재 제재 중이지 않습니다.');
@@ -359,17 +416,37 @@ export default function ManageTable(props) {
                 .then(function(res) {
                     if(res.data == "success") {
                       alert('제재를 부여하였습니다.');
-                      props.pst.history.push('/index', props.pst.history.location.state);
+                      DialogClose();
+                      axios({
+                        method:'post',
+                        url:'http://100.26.66.172:5000/penalty/manage'
+                      })
+                      .then(function(res2) {
+                          if(res.statusText == "OK") {
+                            props.pst.history.location.state.penaltyMng = res2.data;
+                            props.pst.history.push({
+                              pathname : '/users',
+                              state : props.pst.history.location.state
+                            });
+                          }
+                          else {
+                            alert('현재 제재관리를 볼 수 없습니다.');
+                          }
+                      })
+                      .catch(function(error) {
+                          console.log(error);
+                      });
+                      //props.pst.history.push('/index', props.pst.history.location.state);
                     }
                     else if(res.data == "already") {
                         alert('이미 제재 중인 아이디입니다.');
                     }
                     else {
-
+                        alert('ManageTable.js 400 line error');
                     }
                 })
-                .catch(function(error) {
-                    console.log(error);
+                .catch(function(error2) {
+                    console.log(error2);
                 });
           }}
           color="primary">

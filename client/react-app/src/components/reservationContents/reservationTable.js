@@ -38,7 +38,7 @@ var roomsit;
 
 function BackGroundColor(level, rl){
     if(roomsit[rl - 1].sit == 0) {
-        return "#333333";
+        return "#4c4c4c";
     }
 
     if(level == -1) return "";
@@ -46,16 +46,16 @@ function BackGroundColor(level, rl){
     var ret = "#ffffff"; // 하얀
 
     if(level == 1) {
-        ret = "#feccff"; // 핑크
+        ret = "#ff4da6"; // 핑크
     }
     else if(level == 2) {
-        ret = "#ffcbcc"; // 빨강
+        ret = "#ff4d50"; // 빨강
     }
     else if(level == 3) {
-        ret = "#ffe1cb"; // 주황
+        ret = "#ff784e"; // 주황
     }
     else if(level == 4) {
-        ret = "#fff5cc"; // 노랑
+        ret = "#ffdc4d"; // 노랑
     }
 
     return ret;
@@ -146,7 +146,7 @@ export default function ReservationTable(props) {
                         // }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 1), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 1), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -165,7 +165,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 1), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 1), opacity: 0.7}}
                 ></TableCell>
             }
 
@@ -200,7 +200,7 @@ export default function ReservationTable(props) {
                         }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 2), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 2), opacity: 0.9}}
                 ></TableCell>
                 :
 
@@ -218,7 +218,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 2), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 2), opacity: 0.7}}
                 ></TableCell>
             }
 
@@ -251,7 +251,7 @@ export default function ReservationTable(props) {
                         }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 3), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 3), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -270,7 +270,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 3), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 3), opacity: 0.7}}
                 ></TableCell>
             }
 
@@ -304,7 +304,7 @@ export default function ReservationTable(props) {
                         }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 4), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 4), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -323,7 +323,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 4), opacity: 0.3,}}
+                style={{backgroundColor: BackGroundColor(-1, 4), opacity: 0.7,}}
                 to={{ pathname : "/do/"+props.con+"/"+timeList[i]+"/3D_Printer_Room", state : props.st}}
                 ></TableCell>
             }
@@ -358,7 +358,7 @@ export default function ReservationTable(props) {
                         }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 5), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 5), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -377,7 +377,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 5), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 5), opacity: 0.7}}
                 //to={{ pathname : "/do/"+props.con+"/"+timeList[i]+"/VR_Room", state : props.st}}
                 ></TableCell>
             }
@@ -413,7 +413,7 @@ export default function ReservationTable(props) {
                     }
 
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 6), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 6), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -432,7 +432,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 6), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 6), opacity: 0.7}}
                 to={{ pathname : "/do/"+props.con+"/"+timeList[i]+"/Visual_Studio", state : props.st}}
                 ></TableCell>
             }
@@ -468,7 +468,7 @@ export default function ReservationTable(props) {
                         }
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 7), opacity: 0.6}}
+                style={{backgroundColor: BackGroundColor(nowres[idx++].classlevel, 7), opacity: 0.9}}
                 ></TableCell>
 
                 :
@@ -487,7 +487,7 @@ export default function ReservationTable(props) {
                         });
                     }
                 }}
-                style={{backgroundColor: BackGroundColor(-1, 7), opacity: 0.3}}
+                style={{backgroundColor: BackGroundColor(-1, 7), opacity: 0.7}}
                 //to={{ pathname : "/do/"+props.con+"/"+timeList[i]+"/Work_Place", state : props.st}}
                 ></TableCell>
             }
@@ -498,6 +498,9 @@ export default function ReservationTable(props) {
 
   return (
     <div>
+
+
+
       <Table className={classes.table} id={props.mainTable}>
         <TableHead>
           <TableRow>

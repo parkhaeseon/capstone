@@ -13,6 +13,7 @@ var penaltyMng = require('./routes/penaltyManage.js');
 var companysumRouter = require('./routes/companysum.js');
 var roomManage = require('./routes/roomManage.js');
 var resManage = require('./routes/reservationManage.js');
+var gomainrouter = require('./routes/gomain.js');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/penalty', penaltyMng);
 app.use('/company', companysumRouter);
 app.use('/room', roomManage);
 app.use('/reservationmanage', resManage);
+app.use('/gomain', gomainrouter);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

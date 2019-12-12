@@ -110,8 +110,36 @@ router.post('/manage', function(req, res) {
     on t3.penaltycode = t4.penaltycode
     left join penaltytype t5
     on t4.penaltynumber = t5.penaltynumber
-    where t1.classlevel != 1
-    order by t1.classlevel`);
+    where t1.classlevel = 4
+    order by PenaltyCnt desc, ID asc, t4.datestart desc`);
+
+    res.send(result);
+});
+
+router.post('/select', function(req, res) {
+
+    var post = req.body;
+
+    const result = db.query(`select 
+    t2.classname as Class,
+    t1.id as ID, 
+    t1.name as Name,
+    (select count(*) from penaltylist where id = t1.id) as PenaltyCnt,
+    ifnull(t5.penaltyname, '없음') as 'PenaltyReason',
+    ifnull(date_format(t4.datestart, '%Y년 %m월 %d일'), 'X') as 'rDs',
+    ifnull(date_format(t4.dateend, '%Y년 %m월 %d일'), 'X') as 'rDe'
+    from user t1
+    inner join classtype t2
+    using(classlevel)
+    left join penaltylist t3
+    on t3.id = t1.id
+    left join penalty t4
+    on t3.penaltycode = t4.penaltycode
+    left join penaltytype t5
+    on t4.penaltynumber = t5.penaltynumber
+    where t1.classlevel = 4 and
+    (t1.id = ? or t1.name = ?)
+    order by PenaltyCnt desc, ID asc, t4.datestart desc`, [post.ni, post.ni]);
 
     res.send(result);
 });

@@ -3,6 +3,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
  FormControl, InputLabel, NativeSelect, InputBase
 } from '@material-ui/core';
+import axios, {post} from 'axios'; // phs
 
 
 const BootstrapInput = withStyles(theme => ({
@@ -73,9 +74,12 @@ function monthOption(){
     return elements;
 }
 
-export default function ManageSelect(props) {
-  const classes = useStyles();
 
+
+export default function ManageSelect(props) {
+  const userlevel = props.st.history.location.state.classlevel; // phs
+  const classes = useStyles();
+  var Year = props.year, Month = props.month;
   const [year, setYear] = React.useState(props.year);
   const yearChange = event => {
     setYear(event.target.value);
@@ -83,7 +87,7 @@ export default function ManageSelect(props) {
 
   const [month, setMonth] = React.useState(props.month);
   const monthChange = event => {
-    setMonth(event.target.value);
+    setMonth( event.target.value);
   };
 
   // month = props.month;
@@ -95,7 +99,45 @@ export default function ManageSelect(props) {
                 <InputLabel htmlFor="year-select">Year</InputLabel>
                 <NativeSelect
                     value={year}
-                    onChange={yearChange}
+                    //onChange={yearChange}
+                    onChange = {function(e) {
+                        yearChange(e);
+                        Year = e.target.value;
+
+                        if(Month.length != 2 && Month < 10) {
+                            Month = "0" + Month;
+                        }
+                        
+                        if(props.isSum == 'sum') {
+
+                        }
+                        else {
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/reservationDo/manage',
+                                data : {
+                                    classlevel : userlevel,
+                                    id : props.st.history.location.state.ID
+                                }
+                            })
+                            .then(function(res) {
+                                if(res.statusText == "OK") {
+                                    props.st.history.location.state.reservationmanage = res.data;
+    
+                                    props.st.history.push({
+                                      pathname : '/manage/' + Year + '/' + Month,
+                                      state : props.st.history.location.state
+                                    });
+                                }
+                                else {
+                                  alert('mainpage.js 338 error');
+                                }
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
+                        }
+                    }}
                     input={<BootstrapInput name="year" id="year-select" />}
                 >
                     {yearOption()}
@@ -106,13 +148,50 @@ export default function ManageSelect(props) {
                 <InputLabel htmlFor="month-select">Month</InputLabel>
                 <NativeSelect
                     value={month}
-                    onChange={monthChange}
-                    // onChange = {function(e) {
-                    //     monthChange;
-                    //     console.log('ManageSelect.js 112 line e.target.value = ', e.target.value);
-                    // }}
+                    // onChange={monthChange}
+                    onChange = {function(e) {
+                        monthChange(e);
+                        Month = e.target.value;
+
+                        if(Month.length != 2 && Month < 10) {
+                            Month = "0" + Month;
+                        }
+
+                        if(props.isSum == 'sum') {
+
+                        }
+                        else {
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/reservationDo/manage',
+                                data : {
+                                    classlevel : userlevel,
+                                    id : props.st.history.location.state.ID,
+                                    year : Year,
+                                    month : Month
+                                }
+                            })
+                            .then(function(res) {
+                                if(res.statusText == "OK") {
+                                    props.st.history.location.state.reservationmanage = res.data;
+                                    props.st.history.push({
+                                      pathname : '/manage/' + Year + '/' + Month,
+                                      state : props.st.history.location.state,
+                                      year : Year,
+                                      month : Month
+                                    });
+                                }
+                                else {
+                                  alert('mainpage.js 338 error');
+                                }
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
+                        }
+                    }}
                     input={<BootstrapInput name="month" id="month-select" />}
-                >
+                    >
                     {monthOption()}
                 </NativeSelect>
 

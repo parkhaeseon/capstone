@@ -342,7 +342,9 @@ export default function ReservationDo(props) {
                             url:'http://100.26.66.172:5000/reservationDo/manage',
                             data : {
                                 classlevel : userlevel,
-                                id : props.history.location.state.ID
+                                id : props.history.location.state.ID,
+                                year : Year,
+                                month : Month
                             }
                         })
                         .then(function(res) {
@@ -640,7 +642,22 @@ export default function ReservationDo(props) {
                       .then(function(res) {
                         if(res.data == "success") {
                             alert('예약 대기가 완료되었습니다.');
-                            props.history.push('/index', props.history.location.state);
+
+                            axios({
+                                method:'post',
+                                url:'http://100.26.66.172:5000/gomain',
+                                data: {
+                                    classlevel : userlevel,
+                                    id : props.history.location.state.ID,
+                                }
+                            })
+                            .then(function(res2) {
+                                props.history.location.state.rec = res2.data.rec;
+                                props.history.push('/index', props.history.location.state);
+                            })
+                            .catch(function(error2) {
+                                console.log(error2);
+                            });
                           }
                         else if(res.data == "Error") {
                             alert('에러 발생');
@@ -674,7 +691,22 @@ export default function ReservationDo(props) {
                       .then(function(res) {
                           if(res.data == "success") {
                                 alert('예약이 완료되었습니다.');
-                                props.history.push('/index', props.history.location.state);
+
+                                axios({
+                                    method:'post',
+                                    url:'http://100.26.66.172:5000/gomain',
+                                    data: {
+                                        classlevel : userlevel,
+                                        id : props.history.location.state.ID,
+                                    }
+                                })
+                                .then(function(res2) {
+                                    props.history.location.state.rec = res2.data.rec;
+                                    props.history.push('/index', props.history.location.state);
+                                })
+                                .catch(function(error2) {
+                                    console.log(error2);
+                                });
                               }
                           else if(res.data == "Error") {
                               alert('에러 발생');
@@ -689,7 +721,7 @@ export default function ReservationDo(props) {
                             alert('1명 이상이 제재 중이므로, 예약이 불가능합니다.');
                           }
                           else {
-                              alert('알 수 없는 에러 발생 : ReservationStep.js 약 650 line');
+                              alert('알 수 없는 에러 발생 : ReservationStep.js');
                           }
                       })
                       .catch(function(error) {

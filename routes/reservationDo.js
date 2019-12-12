@@ -49,7 +49,9 @@ router.post('/manage', function(req, res){
         as Room,
         count(*) as Cnt,
         (select reason from reservation where reservationcode = r1.reservationcode) as Reason
-        from reservationlist r1 group by reservationcode`);
+        from reservationlist r1 
+        where left(reservationcode, 4) = ? and substring(reservationcode, 5, 2) = ?
+        group by reservationcode`, [post.year, post.month]);
         res.send(result);
     }
     else {
@@ -69,8 +71,8 @@ router.post('/manage', function(req, res){
         (select count(*) from reservationlist r2 where r2.reservationcode = r1.reservationcode) as Cnt,
         (select reason from reservation where reservationcode = r1.reservationcode) as Reason
         from reservationlist r1 
-        where id = ?
-        group by reservationcode`, [post.id]);
+        where id = ? and left(reservationcode, 4) = ? and substring(reservationcode, 5, 2) = ?
+        group by reservationcode`, [post.id, post.year, post.month]);
         res.send(result2);
     }
 });
